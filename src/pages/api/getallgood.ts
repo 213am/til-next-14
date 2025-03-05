@@ -5,9 +5,11 @@ type Data = {
   name: string;
 };
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  res.status(200).json({ name: "John Doe" });
+  const data = await fetch("https://fakestoreapi.com/products");
+  const json = await data.json();
+  res.status(200).json(json);
 }
