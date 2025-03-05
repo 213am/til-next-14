@@ -3,19 +3,17 @@ import goods from "@/mock/goods.json";
 import GoodItem from "@/components/good-item";
 import { ReactNode } from "react";
 import SearchLayout from "@/components/search-layout";
-import { InferGetServerSidePropsType } from "next";
+import { InferGetServerSidePropsType, InferGetStaticPropsType } from "next";
 import { fetchGoods } from "@/lib/fetch-good";
 import { fetchRandomGood } from "@/lib/fetch-random-good";
 
 // Next 에는 약속이 된 함수가 있다.
-export const getServerSideProps = async () => {
-  // 항상 객체를 리턴하고, 반드시 prop 라는 속성이 있어야 한다.
-  // 데이터를 미리 호출하여서 html 을 완성 리턴한다.
-  // const allGoods = await fetchGoods();
-  // const randomGoods = await fetchRandomGood();
-
+export const getStaticProps = async () => {
   // 병렬로 실행하기
-  const [allGoods, randomGoods] = await Promise.all([fetchGoods(), fetchRandomGood()]);
+  const [allGoods, randomGoods] = await Promise.all([
+    fetchGoods(),
+    fetchRandomGood(),
+  ]);
 
   return {
     props: {
@@ -25,7 +23,10 @@ export const getServerSideProps = async () => {
   };
 };
 
-export default function Home({ allGoods, randomGoods }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Home({
+  allGoods,
+  randomGoods,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div className={styles.container}>
       <section>
