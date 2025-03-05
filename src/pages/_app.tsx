@@ -1,30 +1,21 @@
+import GlobalLayout from "@/components/global-layout";
 import "@/styles/globals.css";
+import { NextPage } from "next";
 import type { AppProps } from "next/app";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { ReactNode } from "react";
 
-export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
+// 속성을 추가해준다. 확장도 한다.
+// NextPage 타입을 확장해서 개발자가 추가로 ReactNode 를 1개 추가한 타입
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactNode) => ReactNode;
+};
 
-  const handleClick = () => {
-    router.push("/");
-  };
-
-  return (
-    <>
-      <header>
-        <Link href={"/"}>홈</Link>
-        &emsp;
-        <Link href={"/search?keyword=아이유"}>검색 /search?keyword=아이유</Link>
-        &emsp;
-        <Link href={"/good/1"}>제품상세 /good/1</Link>
-        &emsp;
-        <button onClick={handleClick}>홈으로 이동하기</button>
-      </header>
-      <main>
-        <Component {...pageProps} />
-      </main>
-      <footer></footer>
-    </>
-  );
+export default function App({
+  Component,
+  pageProps,
+}: AppProps & {
+  Component: NextPageWithLayout;
+}) {
+  const getLayout = Component.getLayout ?? ((page: ReactNode) => page);
+  return <GlobalLayout>{getLayout(<Component {...pageProps} />)}</GlobalLayout>;
 }
